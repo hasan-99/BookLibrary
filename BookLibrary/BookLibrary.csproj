@@ -68,16 +68,23 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Themes\DefaultTheme\Site.css" />
+    <Content Include="Default.aspx" />
+    <None Include="MasterPages\Site1.master" />
     <Content Include="Pages\Books.aspx" />
     <Content Include="Pages\BookDetails.aspx" />
     <Content Include="Scripts\validation.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App_Code\Helpers\DBHelper.cs" />
-    <Content Include="App_Code\DAL\BookDAL.cs" />
-    <Content Include="App_Code\Models\Book.cs" />
-    <Compile Include="MasterPages\Site.master.cs" />
+    <Compile Include="Helpers\DBHelper.cs" />
+    <Compile Include="MasterPages\Site1.master.cs">
+      <DependentUpon>Site1.master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="MasterPages\Site1.master.designer.cs">
+      <DependentUpon>Site1.master</DependentUpon>
+    </Compile>
+    <Compile Include="Models\Book.cs" />
     <Compile Include="Pages\Books.aspx.cs">
       <DependentUpon>Books.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -93,10 +100,17 @@
       <DependentUpon>BookDetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Default.aspx.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Default.aspx.designer.cs">
+      <DependentUpon>Default.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Repo\BooksRepository.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App_Themes\DefaultTheme\Skin.skin" />
-    <Content Include="MasterPages\Site1.master" />
     <None Include="packages.config" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>

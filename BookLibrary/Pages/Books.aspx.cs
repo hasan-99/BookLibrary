@@ -1,49 +1,52 @@
-﻿using System;
-using BookLibrary.App_Code.DAL;
-namespace BookLibrary.Pages;
+﻿using BookLibrary.Repo;
+using System;
+using System.Web.UI;
 
-public partial class Books : System.Web.UI.Page
-{
-    protected void Page_Load(object sender, EventArgs e)
-    {
-        if (!IsPostBack)
-            BindGrid();
-    }
-
-    private void BindGrid()
-    {
-        gvBooks.DataSource = BookDAL.GetAllBooks(); // DataTable
-        gvBooks.DataBind();
-    }
-
-    protected void btnAdd_Click(object sender, EventArgs e)
-    {
-        Response.Redirect("~/Pages/BookDetails.aspx");
-    }
-
-    private bool TryGetSelectedISBN(out long isbn)
-    {
-        isbn = 0;
-
-        if (gvBooks.SelectedIndex < 0 || gvBooks.SelectedDataKey == null)
-        {
-            lblMsg.Text = "Please select a book first.";
-            return false;
+namespace BookLibrary.Pages {
+    public partial class Books : Page {
+        protected void Page_Load(object sender, EventArgs e) {
+            if (!IsPostBack) {
+                BindGrid();
+            }
         }
 
-        isbn = Convert.ToInt64(gvBooks.SelectedDataKey.Value);
-        return true;
-    }
+        private void BindGrid() {
+            try {
+                gvBooks.DataSource = BooksRepository.GetAll();
+                gvBooks.DataBind();
+                lblMsg.Text = "";
+            } catch (Exception ex) {
+                lblMsg.Text = ex.Message;
+            }
+        }
 
-    protected void btnEdit_Click(object sender, EventArgs e)
-    {
-        if (!TryGetSelectedISBN(out long isbn)) return;
-        Response.Redirect("~/Pages/BookDetails.aspx?mode=edit&isbn=" + isbn);
-    }
+        private bool TryGetSelectedIsbn(out decimal isbn) {
+            isbn = 0;
+            if (gvBooks.SelectedDataKey == null)
+                return false;
 
-    protected void btnDelete_Click(object sender, EventArgs e)
-    {
-        if (!TryGetSelectedISBN(out long isbn)) return;
-        Response.Redirect("~/Pages/BookDetails.aspx?mode=delete&isbn=" + isbn);
+            // DataKey is ISBN (numeric(13,0)) => best to treat as decimal
+            return decimal.TryParse(gvBooks.SelectedDataKey.Value.ToString(), out isbn);
+        }
+
+        protected void btnAdd_Click(object sender, EventArgs e) {
+            Response.Redirect("~/Pages/BookDetails.aspx?mode=add");
+        }
+
+        protected void btnEdit_Click(object sender, EventArgs e) {
+            if (!TryGetSelectedIsbn(out var isbn)) {
+                lblMsg.Text = "Please select a book first.";
+                return;
+            }
+            Response.Redirect($"~/Pages/BookDetails.aspx?mode=edit&isbn={isbn}");
+        }
+
+        protected void btnDelete_Click(object sender, EventArgs e) {
+            if (!TryGetSelectedIsbn(out var isbn)) {
+                lblMsg.Text = "Please select a book first.";
+                return;
+            }
+            Response.Redirect($"~/Pages/BookDetails.aspx?mode=delete&isbn={isbn}");
+        }
     }
 }

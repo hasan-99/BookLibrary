@@ -1,1 +1,25 @@
-<asp:ContentPlaceHolder ID="MainContent" runat="server" />
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site1.master.cs" Inherits="BookLibrary.MasterPages.Site1" %>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head runat="server">
+    <title>ZEBRA Book Library</title>
+    <link href="~/Content/Site.css" rel="stylesheet" type="text/css" />
+        <script src="~/Scripts/validation.js"></script>
+
+    <asp:ContentPlaceHolder ID="HeadContent" runat="server" />
+</head>
+<body>
+    <form id="form1" runat="server">
+
+        <div class="books-panel">
+            <asp:ContentPlaceHolder ID="MainContent" runat="server" />
+
+            <div class="books-footer">
+                Copyright 2015 - ZEBRA Book Library
+            </div>
+        </div>
+
+    </form>
+</body>
+</html>
