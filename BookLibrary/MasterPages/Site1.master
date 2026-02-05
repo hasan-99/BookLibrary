@@ -16,7 +16,7 @@
             <asp:ContentPlaceHolder ID="MainContent" runat="server" />
 
             <div class="books-footer">
-                Copyright 2015 - ZEBRA Book Library
+                Copyright <%: DateTime.Now.Year %> – ZEBRA Book Library
             </div>
         </div>
 
