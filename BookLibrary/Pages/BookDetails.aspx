@@ -14,29 +14,29 @@
 
     <table style="margin: 0 16px 10px 16px; font-family: Arial; font-size: 14px;">
         <tr>
-            <td style="width: 160px;">ISBN</td>
+            <td>ISBN</td>
             <td>
-                <asp:TextBox ID="txtISBN" runat="server" /></td>
+                <asp:TextBox ID="txtISBN" runat="server" width="220" /></td>
         </tr>
         <tr>
             <td>Title</td>
             <td>
-                <asp:TextBox ID="txtTitle" runat="server" Width="360" /></td>
+                <asp:TextBox ID="txtTitle" runat="server" Width="220" /></td>
         </tr>
         <tr>
             <td>Author</td>
             <td>
-                <asp:TextBox ID="txtAuthor" runat="server" Width="360" /></td>
+                <asp:TextBox ID="txtAuthor" runat="server" Width="220" /></td>
         </tr>
         <tr>
             <td>Publish Date (yyyy-MM-dd)</td>
             <td>
-                <asp:TextBox ID="txtPublishDate" runat="server" /></td>
+                <asp:TextBox ID="txtPublishDate" runat="server" Width="220" /></td>
         </tr>
         <tr>
             <td>Price</td>
             <td>
-                <asp:TextBox ID="txtPrice" runat="server" /></td>
+                <asp:TextBox ID="txtPrice" runat="server" width="220"/></td>
         </tr>
         <tr>
             <td>Publish</td>
