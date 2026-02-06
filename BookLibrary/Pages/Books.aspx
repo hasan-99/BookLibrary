@@ -28,9 +28,9 @@
     </asp:GridView>
 
     <div class="actions">
-        <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn" OnClick="btnAdd_Click" />
-        <asp:Button ID="btnEdit" runat="server" Text="Edit" CssClass="btn" OnClick="btnEdit_Click" />
-        <asp:Button ID="btnDelete" runat="server" Text="Delete" CssClass="btn" OnClick="btnDelete_Click" />
+        <asp:Button ID="btnAdd" runat="server" Text="Add" CssClass="btn" OnClientClick="return validateBookDetails();" OnClick="btnAdd_Click" />
+        <asp:Button ID="btnEdit" runat="server" Text="Edit" CssClass="btn" OnClientClick="return validateBookDetails();" OnClick="btnEdit_Click" />
+        <asp:Button ID="btnDelete" runat="server" Text="Delete" CssClass="btn" OnClientClick="return validateBookDetails();" OnClick="btnDelete_Click" />
     </div>
 
 </asp:Content>

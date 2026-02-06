@@ -76,6 +76,7 @@
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\ErrorHandler.cs" />
     <Compile Include="Helpers\DBHelper.cs" />
     <Compile Include="MasterPages\Site1.master.cs">
       <DependentUpon>Site1.master</DependentUpon>
@@ -85,6 +86,8 @@
       <DependentUpon>Site1.master</DependentUpon>
     </Compile>
     <Compile Include="Models\Book.cs" />
+    <Compile Include="Models\Enums\PageMode.cs" />
+    <Compile Include="Models\OperationResult,cs.cs" />
     <Compile Include="Pages\Books.aspx.cs">
       <DependentUpon>Books.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

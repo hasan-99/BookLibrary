@@ -1,4 +1,5 @@
-﻿using BookLibrary.Repo;
+﻿using BookLibrary.Helpers;
+using BookLibrary.Repo;
 using System;
 using System.Web.UI;
 
@@ -16,7 +17,7 @@ namespace BookLibrary.Pages {
                 gvBooks.DataBind();
                 lblMsg.Text = "";
             } catch (Exception ex) {
-                lblMsg.Text = ex.Message;
+                lblMsg.Text = ErrorHandler.GetUserMessage(ex);
             }
         }
 
@@ -30,7 +31,8 @@ namespace BookLibrary.Pages {
         }
 
         protected void btnAdd_Click(object sender, EventArgs e) {
-            Response.Redirect("~/Pages/BookDetails.aspx?mode=add");
+            Response.Redirect("~/Pages/BookDetails.aspx?mode=add", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         protected void btnEdit_Click(object sender, EventArgs e) {
@@ -38,7 +40,8 @@ namespace BookLibrary.Pages {
                 lblMsg.Text = "Please select a book first.";
                 return;
             }
-            Response.Redirect($"~/Pages/BookDetails.aspx?mode=edit&isbn={isbn}");
+            Response.Redirect($"~/Pages/BookDetails.aspx?mode=edit&isbn={isbn}", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
 
         protected void btnDelete_Click(object sender, EventArgs e) {
@@ -46,7 +49,8 @@ namespace BookLibrary.Pages {
                 lblMsg.Text = "Please select a book first.";
                 return;
             }
-            Response.Redirect($"~/Pages/BookDetails.aspx?mode=delete&isbn={isbn}");
+            Response.Redirect($"~/Pages/BookDetails.aspx?mode=delete&isbn={isbn}", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
     }
 }

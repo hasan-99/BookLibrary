@@ -48,8 +48,8 @@
     <div class="actions">
         <asp:Button ID="btnSave" runat="server" Text="Save" CssClass="btn"  OnClientClick="return validateBookDetails();"
     OnClick="btnSave_Click" />
-        <asp:Button ID="btnConfirmDelete" runat="server" Text="Delete" CssClass="btn" OnClick="btnConfirmDelete_Click" Visible="false" />
-        <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn" OnClick="btnCancel_Click" />
+        <asp:Button ID="btnConfirmDelete" runat="server" Text="Delete" CssClass="btn" OnClientClick="return validateBookDetails();" OnClick="btnConfirmDelete_Click" Visible="false" />
+        <asp:Button ID="btnCancel" runat="server" Text="Cancel" CssClass="btn" OnClientClick="return validateBookDetails();" OnClick="btnCancel_Click" />
     </div>
 
 

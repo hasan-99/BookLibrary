@@ -1,30 +1,37 @@
-﻿using BookLibrary.Repo;
+﻿using BookLibrary.Helpers;
+using BookLibrary.Models;
+using BookLibrary.Models.Enums;
+using BookLibrary.Repo;
 using System;
 using System.Globalization;
 using System.Web.UI;
 
 namespace BookLibrary.Pages {
     public partial class BookDetails : Page {
-        private string Mode => ( Request.QueryString["mode"] ?? "add" ).ToLowerInvariant();
+        private PageMode Mode {
+            get {
+                PageMode mode;
+                Enum.TryParse(Request.QueryString["mode"], true, out mode);
+                return mode;
+            }
+        }
 
         protected void Page_Load(object sender, EventArgs e) {
-            if (!IsPostBack) {
+            if (!IsPostBack)
                 SetupByMode();
-            }
         }
 
         private void SetupByMode() {
             lblMsg.Text = "";
 
-            if (Mode == "add") {
+            if (Mode == PageMode.Add) {
                 lblPageTitle.Text = "Add New Book";
                 btnConfirmDelete.Visible = false;
                 btnSave.Visible = true;
                 SetInputsEnabled(true);
-                return; // keep empty
+                return;
             }
 
-            // edit/delete must have isbn
             if (!decimal.TryParse(Request.QueryString["isbn"], out var isbn)) {
                 lblMsg.Text = "Missing ISBN.";
                 btnSave.Visible = false;
@@ -47,13 +54,13 @@ namespace BookLibrary.Pages {
             txtPrice.Text = b.Price.ToString("0.00", CultureInfo.InvariantCulture);
             chkPublish.Checked = b.Publish;
 
-            if (Mode == "edit") {
+            if (Mode == PageMode.Edit) {
                 btnSave.Visible = true;
                 lblPageTitle.Text = "Edit: " + b.Title;
                 btnConfirmDelete.Visible = false;
-                txtISBN.Enabled = false; // key shouldn’t change
+                txtISBN.Enabled = false;
                 SetInputsEnabled(true, keepIsbnDisabled: true);
-            } else if (Mode == "delete") {
+            } else if (Mode == PageMode.Delete) {
                 lblPageTitle.Text = "Delete: " + b.Title;
                 btnSave.Visible = false;
                 btnConfirmDelete.Visible = true;
@@ -71,6 +78,8 @@ namespace BookLibrary.Pages {
         }
 
         protected void btnSave_Click(object sender, EventArgs e) {
+            lblMsg.Text = "";
+
             try {
                 if (!decimal.TryParse(txtISBN.Text.Trim(), out var isbn)) {
                     lblMsg.Text = "ISBN must be numeric.";
@@ -85,9 +94,19 @@ namespace BookLibrary.Pages {
                     return;
                 }
 
-                if (!DateTime.TryParseExact(txtPublishDate.Text.Trim(), "yyyy-MM-dd", CultureInfo.InvariantCulture,
-                        DateTimeStyles.None, out var pubDate)) {
+                if (!DateTime.TryParseExact(
+                        txtPublishDate.Text.Trim(),
+                        "yyyy-MM-dd",
+                        CultureInfo.InvariantCulture,
+                        DateTimeStyles.None,
+                        out var pubDate)) {
                     lblMsg.Text = "Publish Date must be in yyyy-MM-dd format.";
+                    return;
+                }
+
+                // ✅ منع SqlDateTime overflow
+                if (pubDate < new DateTime(1753, 1, 1)) {
+                    lblMsg.Text = "Publish Date must be 1753-01-01 or later.";
                     return;
                 }
 
@@ -98,35 +117,49 @@ namespace BookLibrary.Pages {
 
                 var publish = chkPublish.Checked;
 
-                if (Mode == "add") {
-                    BooksRepository.Insert(isbn, title, author, pubDate, price, publish);
-                } else // edit
-                  {
-                    BooksRepository.Update(isbn, title, author, pubDate, price, publish);
+                OperationResult result;
+                if (Mode == PageMode.Add)
+                    result = BooksRepository.Insert(isbn, title, author, pubDate, price, publish);
+                else
+                    result = BooksRepository.Update(isbn, title, author, pubDate, price, publish);
+
+                if (!result.Success) {
+                    lblMsg.Text = result.Message;
+                    return;
                 }
 
-                Response.Redirect("~/Pages/Books.aspx");
+                Response.Redirect("~/Pages/Books.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             } catch (Exception ex) {
-                lblMsg.Text = ex.Message;
+                lblMsg.Text = ErrorHandler.GetUserMessage(ex);
             }
         }
 
         protected void btnConfirmDelete_Click(object sender, EventArgs e) {
+            lblMsg.Text = "";
+
             try {
                 if (!decimal.TryParse(txtISBN.Text.Trim(), out var isbn)) {
                     lblMsg.Text = "Missing ISBN.";
                     return;
                 }
 
-                BooksRepository.Delete(isbn);
-                Response.Redirect("~/Pages/Books.aspx");
+                var result = BooksRepository.Delete(isbn);
+                if (!result.Success) {
+                    lblMsg.Text = result.Message;
+                    return;
+                }
+
+                Response.Redirect("~/Pages/Books.aspx", false);
+                Context.ApplicationInstance.CompleteRequest();
             } catch (Exception ex) {
-                lblMsg.Text = ex.Message;
+                lblMsg.Text = ErrorHandler.GetUserMessage(ex);
             }
         }
 
         protected void btnCancel_Click(object sender, EventArgs e) {
-            Response.Redirect("~/Pages/Books.aspx");
+            Response.Redirect("~/Pages/Books.aspx", false);
+            Context.ApplicationInstance.CompleteRequest();
         }
     }
 }
